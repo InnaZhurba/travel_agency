@@ -1,0 +1,22 @@
+﻿@model IEnumerable<UI_Tour.Models.TourType>
+
+@{
+    ViewBag.Title = "Index";
+}
+
+<h2>Type of tour</h2>
+<table class="table">
+    <tr><td>Type</td></tr>
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>@item.Type</td>
+            <td>
+                @Html.ActionLink("Choose", "Choose_Info", new { id = item.Id })
+            </td>
+        </tr>
+    }
+</table>
+<div>
+    @Html.ActionLink("Back to main menu", "Index")
+</div>

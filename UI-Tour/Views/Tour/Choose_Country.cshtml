@@ -1,0 +1,30 @@
+﻿@model UI_Tour.Models.CountryAndRegion
+@{
+    ViewBag.Title = "Choose_Country";
+}
+
+<h2>Choose country and region</h2>
+<table class="table">
+    <tr>
+        <td>Country</td>
+        <td>Region</td>
+    </tr>
+    @{ 
+        string i ="";
+    }
+    @foreach (var item in Model.Countries)
+    {
+<tr>
+    <td>@item.Name</td>
+    @foreach (var val in Model.Regions.Where(p => p.Id == item.RegionId)) { i = val.Name; }
+    <td>@i</td>
+    <td>
+        @Html.ActionLink("Choose", "Add_ListOC", new { id = item.Id })
+    </td>
+</tr> 
+    }
+</table>
+<div>
+    @Html.ActionLink("Back to Types of tour", "Choose_Type")
+</div>
+

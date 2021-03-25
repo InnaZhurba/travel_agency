@@ -1,0 +1,146 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>List of tours</title>
+    <style>
+        .design {
+            display: inline-block; /* Строчно-блочный элемент */
+            padding: 5px 20px; /* Добавляем поля */
+            text-decoration: none; /* Убираем подчёркивание у ссылки */
+            cursor: pointer; /* Курсор в виде руки */
+            background: #deefff; /* Фон для браузеров, не поддерживающих градиент */
+            /* Градиент */
+            background: -moz-linear-gradient(top, #deefff 0%, #98bede 100%);
+            background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#deefff), color-stop(100%,#98bede));
+            background: -webkit-linear-gradient(top, #deefff 0%,#98bede 100%);
+            background: -o-linear-gradient(top, #deefff 0%,#98bede 100%);
+            background: -ms-linear-gradient(top, #deefff 0%,#98bede 100%);
+            background: linear-gradient(top, #deefff 0%,#98bede 100%);
+            border-radius: 10px; /* Скругляем уголки */
+            border: 1px solid #008; /* Добавляем синюю рамку */
+            font: 12px/1 Arial, sans-serif; /* Рубленый шрифт */
+            color: #2c539e; /* Цвет текста и ссылки */
+        }
+    </style>
+    <link href="https://localhost:44383/Content/bootstrap.css" rel="stylesheet" />
+    <link href="Content/bootstrap-grid.css" rel="stylesheet" />
+    <link href="Content/MyNavbar.css" rel="stylesheet" />
+</head>
+<body>
+    <div>
+        <nav class="navbar navbar-expand-sm bg-dark navbar-dark">
+            <ul class="navbar-nav" id="myTab">
+                <li class="nav-item active">
+                    <a class="nav-link" href="Main.html">Home</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">Transports</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">Hotels</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link disabled" href="#">Tours</a>
+                </li>
+            </ul>
+        </nav>
+    </div>
+
+    <div>
+        <h2>Search by ID</h2>
+        <input type="text" id="prodId" size="5" />
+        <input type="button" value="Search" onclick="find();" />
+
+        <div class="panel panel-success">
+            <div class="panel-heading"><h3>Tour</h3></div>
+            <table class="table">
+                <tbody>
+                    <tr>
+                        <td><p id="product" /></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="panel panel-info">
+        <div class="panel-heading"><h3>All Tours</h3></div>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>№</th>
+                    <th>Name</th>
+                    <th>Type</th>
+                    <th>Info</th>
+                    <th>Country</th>
+                    <th>Region</th>
+                    <th>Choose</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><p id="tourId" /></td>
+                    <td><p id="tourName" /></td>
+                    <td><p id="tourType" /></td>
+                    <td><p id="tourInfo" /></td>
+                    <td><p id="country" /></td>
+                    <td><p id="region" /></td>
+                    <td><p id="link" /></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+
+
+    <script src="Scripts/jquery-3.5.1.intellisense.js"></script>
+    <script src="https://localhost:44383/Scripts/jquery-3.5.1.js"></script>
+    <script src="Scripts/popper.js"></script>
+    <script src="https://localhost:44383/Scripts/bootstrap.js"></script>
+    <script>
+        //$.widget.bridge('uitooltip', $.ui.tooltip);
+        //$.widget.bridge('uibutton', $.ui.button);
+
+        var uri = 'api/TourAndDetails';//'api/TourElements';
+        $(document).ready(function () {
+            // Send an AJAX request
+            $.getJSON(uri)
+                .done(function (data) {
+                    // On success, 'data' contains a list of products.
+                    $.each(data, function (key, item) {
+                        // Add a list item for the product.
+                        //$('<li>', { text: formatItem(item) }).appendTo($('#tourName'));
+                        $('<p>' + item.Tours.Name + '</p>').appendTo($('#tourName'));
+                        $('<p>' + item.Tours.Id + '</p>').appendTo($('#tourId'));
+                        $('<p>' + item.Types.Type + '</p>').appendTo($('#tourType'));
+                        $('<p>' + item.Infos.Info + '</p>').appendTo($('#tourInfo'));
+                        $('<p>' + item.Countries.Name + '</p>').appendTo($('#country'));
+                        $('<p>' + item.Regions.Name + '</p>').appendTo($('#region'));
+                        $('<p>' +'<a href="#">Choose</a>'+'</p>').appendTo($('#link'));
+
+                    });
+                });
+        });
+
+        function formatItem(item) {
+            return item.Tours.Id + ": " + item.Tours.Name + " - " + item.Types.Type + " - " + item.Infos.Info + " - " + item.Countries.Name + " - " + item.Regions.Name;//('<li>' ,{ text: val }));
+        }
+
+        function find() {
+            var id = $('#prodId').val();
+            $.getJSON(uri + '/' + id)
+                .done(function (data) {
+                    $('#product').text(formatItem(data));
+                })
+                .fail(function (jqXHR, textStatus, err) {
+                    $('#product').text('Error: ' + err);
+                });
+        }
+
+    </script>
+
+</body>
+</html>

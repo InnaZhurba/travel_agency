@@ -1,0 +1,83 @@
+﻿
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>List of tours</title>
+    <link href="/examples/vendors/bootstrap-3.3.7/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+
+    <div class="panel panel-primary">
+        <div class="panel-heading">Tours</div>
+        <table class="table table-striped">
+            <tr>
+                <td><button data-bind="click: getProducts">Get Products</button></td>
+                <td><button data-bind="click: testDeleteProduct">Delete Product</button></td>
+                <td><button data-bind="click: testChangeProduct">Change Product</button></td>
+            </tr>
+        </table>
+    </div>
+
+    @*<div>
+        <h2>Tours:</h2>
+        <ul id="tours" />
+    </div>
+    <div>
+        <h2>Search by ID</h2>
+        <input type="text" id="prodId" size="5" />
+        <input type="button" value="Search" onclick="find();" />
+        <p id="product" />
+    </div>*@
+
+
+
+
+    <script src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-2.0.3.min.js"></script>
+    <script>
+        var productUrl = "/api/TourElements/";
+
+        var getProducts = function () { sendRequest(productUrl, "GET", null, function (data) { model.products.removeAll(); model.products.push.apply(model.products, data); }) };
+
+        var deleteProduct = function (id) { sendRequest(productUrl + id, "DELETE", null, function () { model.products.remove(function (item) { return item.Id == id; }) }); }
+
+        var saveProduct = function (product, successCallback) { sendRequest(productUrl, "POST", product, function () { getProducts(); if (successCallback) { successCallback(); } }); }
+        var uri = 'api/TourElements';
+
+        $(document).ready(function () {
+            // Send an AJAX request
+            $.getJSON(uri)
+                .done(function (data) {
+                    // On success, 'data' contains a list of products.
+                    $.each(data, function (key, item) {
+                        // Add a list item for the product.
+                        $('<li>', { text: formatItem(item) }).appendTo($('#tours'));
+                    });
+                });
+        });
+
+        function formatItem(item) {
+            //return item.Name + ': $' + item.TourTypeId + '- $' + item.InfoId;
+            return (item.Name);
+        }
+
+        function find() {
+            var id = $('#prodId').val();
+            $.getJSON(uri + '/' + id)
+                .done(function (data) {
+                    $('#product').text(formatItem(data));
+                })
+                .fail(function (jqXHR, textStatus, err) {
+                    $('#product').text('Error: ' + err);
+                });
+        }
+    </script>
+</body>
+</html>
+

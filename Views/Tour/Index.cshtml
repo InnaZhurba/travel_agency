@@ -1,0 +1,43 @@
+﻿@model UI_Tour.Models.TourAndDetails
+
+@{
+    ViewBag.Title = "Index";
+}
+
+<h2>Tours</h2>
+
+<div>
+    @Html.ActionLink("Add  new tour", "Choose_Type")
+</div>
+
+<table class="table">
+    <tr>
+        <td>Name</td>
+        <td>Type</td>
+        <td>Information</td>
+        <td>Country</td>
+        <td>Region</td>
+    </tr>
+    @{
+        string i = "", j ="", k = "", n = "";
+        int a=0, b=0;
+    }
+    @foreach (var item in Model.Tours)
+    {
+<tr>
+    <td>@item.Name</td>
+    @foreach (var val in Model.Types.Where(p => p.Id == item.TourTypeId)) { i = val.Type; }
+    <td>@i</td>
+    @foreach (var val in Model.Infos.Where(p => p.Id == item.InfoId)) { j = val.Info; }
+    <td>@j</td>
+    @foreach (var val in Model.ListOfCountries.Where(p => p.TourId == item.Id)) { a = val.CountryId; }
+    @foreach (var val in Model.Countries.Where(p => p.Id == a)) { k = val.Name; b = val.RegionId; }
+    <td>@k</td>
+    @foreach (var val in Model.Regions.Where(p => p.Id == b)) { n = val.Name; }
+    <td>@n</td>
+    <td>
+        @Html.ActionLink("Edit", "EditTour", new { id = item.Id })
+    </td>
+</tr>
+    }
+</table>

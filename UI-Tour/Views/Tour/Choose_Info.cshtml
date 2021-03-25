@@ -1,0 +1,22 @@
+﻿@model IEnumerable<UI_Tour.Models.TourInfo>
+@{
+    ViewBag.Title = "Choose_Info";
+}
+
+<h2>Short information about the tour</h2>
+<table class="table">
+    <tr><td>Info</td></tr>
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>@item.Info</td>
+            <td>
+                @Html.ActionLink("Choose", "Add_Tour", new { id = item.Id})
+            </td>
+        </tr>
+    }
+</table>
+<div>
+    @Html.ActionLink("Back to Types", "Choose_Type")
+</div>
+

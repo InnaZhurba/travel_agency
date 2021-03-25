@@ -1,0 +1,176 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Create new tour</title>
+    <link href="Content/bootstrap.css" rel="stylesheet" />
+    <link href="Content/MyNavbar.css" rel="stylesheet" />
+</head>
+<body>
+    <div>
+        <nav class="navbar navbar-expand-sm bg-dark navbar-dark">
+            <ul class="navbar-nav" id="myTab">
+                <li class="nav-item active">
+                    <a class="nav-link" href="Main.html">Home</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">Transports</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">Hotels</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link active" href="TourElements.html">Tours</a>
+                </li>
+            </ul>
+        </nav>
+    </div>
+
+    <div>
+        <form action="api/TourElements/" method="post" name="drop_down_box">
+            <p>Tour Name:</p>
+            <input type="text" id="tourName" size="5" />
+            <select name="menuType" size="1" id="selectType">
+                <option selected disabled>Type</option>
+            </select>
+            <select name="menuInfo" size="1" id="selectInfo">
+                <option selected disabled>Info</option>
+            </select>
+            <select name="menuCountry" size="1" id="selectCountryAndRegion">
+                <option selected disabled>Country and region</option>
+            </select>        
+            <input type="button" id ="butt" value="Create" />
+        </form>
+    </div>
+
+    <script src="Scripts/jquery-3.5.1.js"></script>
+    <script src="Scripts/bootstrap.js"></script>
+    <script>
+        var uri = 'api/TourType';
+        $(document).ready(function () {
+            $.getJSON(uri)
+                .done(function (data) {
+                    $.each(data, function (key, item) {                        
+                        $('#selectType').append('<option value="' + key + '">' + item.Type + '</option>');
+
+                    });
+                });
+            $.getJSON('api/TourInfo')
+                .done(function (data) {
+                    $.each(data, function (key, item) {
+                        $('#selectInfo').append('<option value="' + key + '">' + item.Info + '</option>');
+
+                    });
+                });
+            $.getJSON('api/Country')
+                .done(function (data) {
+                    $.each(data, function (key, item) {
+
+                        $.getJSON('api/Region')
+                            .done(function (reg) {
+                                $.each(reg, function (keyR, itemR) {
+                                    $('#selectCountryAndRegion').append('<option value="' + key + '">' + item.Name + " - " + itemR.Name + '</option>');
+
+                                });
+                            });                       
+
+                    });
+                });
+
+            $('#butt').click(function () {
+                var name = $('#tourName').val();
+                var type = $('#selectType').val();
+                var info = $('#selectInfo').val();
+
+                var tour = {
+                    Name = name,//$('#tourName').val(),
+                    TourTypeId = type,//$('#selectType').val(),
+                    InfoId = info//$('#selectInfo').val(),
+                };
+
+                $.ajax({
+                    dataType: 'json',
+                    type: 'POST',
+                    url: 'api/GetData/newEntry',
+                    data: JSON.stringify(tour),
+                    contentType: 'application/json; charset=utf-8',
+                    succes: function (data) {
+                        console.log(data);
+                    },
+                    error: function () {
+                        console.log("error again!");
+                    }
+
+                });
+
+                //var settings = {
+                //    "url": "api/TourElements/Post",
+                //    "method": "POST",
+                //    "timeout": 0,
+                //    "headers": {
+                //        "Content-Type": "application/json"
+                //    },
+                //    "data": JSON.stringify({
+                //        Name = $('#tourName').val(),
+                //        TourTypeId = $('#selectType').val(),
+                //        InfoId = $('#selectInfo').val(),
+                //    }),
+                //};
+
+                //$.ajax(settings).done(function (response) {
+                //    console.log(response);
+                //});
+
+                //$.ajax({
+                //    type: "POST",
+                //    url: 'api/TourElements',
+                //    data: JSON.stringify({
+                //        Name = $('#tourName').val(),
+                //        TourTypeId = $('#selectType').val(),
+                //        InfoId = $('#selectInfo').val(),
+                //    }),
+                //});
+
+                //var i = 0;
+                //$.getJSON('api/TourElements')
+                //    .done(function (data) {
+                //        $.each(data, function (key, item) {
+                //            i = item.Id;
+                //        })
+                //    });
+
+                //var settingsOC = {
+                //    "url": "api/ListOC",
+                //    "method": "POST",
+                //    "timeout": 0,
+                //    "headers": {
+                //        "Content-Type": "application/json"
+                //    },
+                //    "data": JSON.stringify({
+                //        CountryId = $('#selectCountryAndRegion').val(),
+                //        TourId = 7,
+                //    }),
+                //};
+
+                //$.ajax(settingsOC).done(function (response) {
+                //    console.log(response);
+                //});
+
+                //$.ajax({
+                //    type: "POST",
+                //    url: 'api/ListOC',
+                //    data: JSON.stringify({
+                //        CountryId = $('#selectCountryAndRegion').val(),
+                //        TourId = i,
+                //    }),
+                //});
+            });
+        });
+
+       
+
+    </script>
+</body>
+</html>
